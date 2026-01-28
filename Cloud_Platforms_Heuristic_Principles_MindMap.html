@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10 Heuristic Principles for Cloud Platforms</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .transition-all { transition: all 0.3s ease; }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
+  <div class="max-w-7xl mx-auto" id="app"></div>
+
+  <script>
+    const principlesData = [
+      {
+        id: 1,
+        name: "Interoperability",
+        color: "#E74C3C",
+        description: "Seamless integration of data from heterogeneous sources across the cloud ecosystem",
+        needs: [
+          "Federation of services and resources",
+          "Standardized APIs (OpenEO, STAC, OGC)",
+          "Portable workflows across platforms",
+          "Avoid vendor lock-in"
+        ],
+        recommendations: [
+          "Data interoperability: Facilitate integration of heterogeneous datasets",
+          "Model interoperability: Enable sharing of models and algorithms",
+          "Service interoperability: Integrate external services, avoid vendor lock-in",
+          "Semantic interoperability: Use standardized vocabulary, metadata, and APIs"
+        ],
+        examples: {
+          pairs: [
+            { weakness: "Changing data provider requires using a completely different API", strength: "OpenEO API offers standardized APIs and portability among platforms" },
+            { weakness: "Collection naming not standardized (Sentinel 2, Sentinel-2, S2, S-2)", strength: "STAC specification provides common structure for cataloguing assets" },
+            { weakness: "Need to rewrite code when changing platform", strength: "Binder enables notebook file transfer across platforms" },
+            { weakness: "Vendor lock-in with cloud-specific workflows", strength: "VLAB uses containerization for cloud-agnostic workflows" },
+            { weakness: "Platforms operate as silos with no cross-platform workflows", strength: "Options to deploy workflow parts to different platforms optimally" }
+          ],
+          userQuote: "CreoDIAS was selected because it offers a VM to do analysis, GEE because of data availability (not in CreoDIAS)"
+        }
+      },
+      {
+        id: 2,
+        name: "Access",
+        color: "#3498DB",
+        description: "Availability of data, models, and services with clear licensing and authentication",
+        needs: [
+          "Single sign-on / federated trust",
+          "Clear licensing and usage rights",
+          "Quality assurance and metrics",
+          "Different service tiers for different needs"
+        ],
+        recommendations: [
+          "Access to data: FAIR/TRUST compliance, quality metrics, clear licensing",
+          "Access to models: Pre-built models library/marketplace",
+          "Access to services: GPUs, HPC, Edge Cloud, containerization",
+          "Diverse users: Accessible web design (WCAG standards)"
+        ],
+        examples: {
+          pairs: [
+            { weakness: "Need to manage different accounts for accessing different platforms", strength: "EGI federation and GÉANT AAI enable single sign-on" },
+            { weakness: "Downloading whole scene even if smaller region of interest needed", strength: "Acquire data pixel-wise using bounding box or GeoJSON (on-demand)" },
+            { weakness: "Difficulty to assess data quality without accompanying metrics", strength: "Each dataset accompanied by quality metrics" },
+            { weakness: "One solution fits all doesn't work for diverse user needs", strength: "Distinction in service offering for research vs operational purposes" },
+            { weakness: "In-situ data across EU often not harmonised, not shared, or inaccessible", strength: "Network of trusted user profiles eases access to data/software" }
+          ],
+          userQuote: "Providing historic in-situ data is often an effort for data providers as well as the harmonisation and proper documentation"
+        }
+      },
+      {
+        id: 3,
+        name: "Discovery",
+        color: "#2ECC71",
+        description: "Finding relevant data and services through comprehensive metadata and search",
+        needs: [
+          "Complete and accurate metadata",
+          "Semantic search capabilities",
+          "Service metadata and brokers",
+          "Integration with discovery portals"
+        ],
+        recommendations: [
+          "Integration with discovery platforms (ESA NoR Portal, GEOSS)",
+          "Complete metadata for datasets AND services",
+          "Usage analytics as feedback for platforms",
+          "Search Engine Optimization for service pages"
+        ],
+        examples: {
+          pairs: [
+            { weakness: "In-situ data only shared within private networks requiring research proposals", strength: "Private datasets should have public metadata for discoverability" },
+            { weakness: "Service metadata incomplete or missing; no broker for services", strength: "Compare offers from web page like car insurance or mobile plans" },
+            { weakness: "The experience of searching for data is difficult", strength: "Semantic searches and recommendations based on similar searches" },
+            { weakness: "Licensing not immediately clear when performing a search", strength: "Filtering by license in repository searches" },
+            { weakness: "Data fragmentation with duplicates across platforms", strength: "Avoid duplicates through semantic search and unified catalogues" }
+          ],
+          userQuote: "The experience of searching for data should be easier with semantic searches and recommendations by number of downloads"
+        }
+      },
+      {
+        id: 4,
+        name: "Documentation",
+        color: "#9B59B6",
+        description: "Quality, currency, and accessibility of guidance materials and tutorials",
+        needs: [
+          "Up-to-date documentation and FAQs",
+          "End-to-end examples for use cases",
+          "Decision support tools",
+          "Multimedia formats (videos, notebooks)"
+        ],
+        recommendations: [
+          "Completeness: Cover all relevant aspects",
+          "Regular updates: Keep documentation current",
+          "Use case coverage: Multiple examples",
+          "Trial environments: Sandbox/demo mode to explore the platform hands-on"
+        ],
+        examples: {
+          pairs: [
+            { weakness: "Diverse data cube technologies are hard to navigate", strength: "End-to-end documentation and examples for frequent use cases" },
+            { weakness: "Difficult to choose the right tool or platform for the use case", strength: "Decision tree tool guides users through feature selection" },
+            { weakness: "Difficult to understand or navigate the documentation", strength: "Chat box tool for specific documentation queries" },
+            { weakness: "Outdated articles and tutorials cause confusion and issues", strength: "All documentation regularly updated with version tracking" },
+            { weakness: "Comparing solutions across platforms is challenging", strength: "Standard documentation format facilitates cross-platform comparison" }
+          ],
+          userQuote: "Documentation and FAQs are often the first point of reference during a problem, their relevance cannot be overstated"
+        }
+      },
+      {
+        id: 5,
+        name: "Customisation",
+        color: "#F39C12",
+        description: "Flexibility to adapt infrastructure, workflows, and services to user needs",
+        needs: [
+          "Adaptable computing resources (CPU/GPU/storage)",
+          "Flexible metadata schemas",
+          "Customizable workflows",
+          "Cross-platform support"
+        ],
+        recommendations: [
+          "Data visualization customisation",
+          "Data processing customisation",
+          "Workflow customization with federated resources",
+          "Service Level Agreements for different operational levels"
+        ],
+        examples: {
+          pairs: [
+            { weakness: "Inflexible infrastructure that can't adapt to varied user needs", strength: "Users can customize CPU/GPU and storage resources" },
+            { weakness: "Limited metadata retrieval options not meeting all requirements", strength: "Retrieve metadata according to different schemas and formats" },
+            { weakness: "Inability to access tailored Analysis Ready Data (ARD)", strength: "Request specific types of Analysis Ready Data (ARD)" },
+            { weakness: "Lack of customization for global/regional/local requirements", strength: "Fine-tune analysis and visualizations for specific geographic levels" },
+            { weakness: "Inadequate support for users working across multiple platforms", strength: "Bring your own containers/environments to platforms" }
+          ],
+          userQuote: "We abandoned CreoDIAS due to being unsatisfied with its quality of service and timeliness of product delivery [for mobile app]"
+        }
+      },
+      {
+        id: 6,
+        name: "Customer Support",
+        color: "#1ABC9C",
+        description: "Quality, expertise, and responsiveness of assistance provided to users",
+        needs: [
+          "Expert knowledge (more important than speed)",
+          "Effective triage system",
+          "Communication skills",
+          "Continuous process improvement"
+        ],
+        recommendations: [
+          "Response time: Customized based on operational level",
+          "Multilingual support availability",
+          "Expertise matching: First-line and second-line support",
+          "Process improvement based on user feedback"
+        ],
+        examples: {
+          pairs: [
+            { weakness: "First-line support people are not experts, causing delays", strength: "Talk with real experts directly for specific problems" },
+            { weakness: "Wait hours for first answer, then issue passed to another team", strength: "Triage system ('first contact doctor') identifies issue type and complexity" },
+            { weakness: "Support responses sometimes not understandable and confusing", strength: "Improve clarity and communication skills of support responses" },
+            { weakness: "Support in different time zones can be delayed", strength: "Expand support availability for users on other continents" },
+            { weakness: "People do not want to talk with bots for EO/cloud problems", strength: "Real person support preferred; bots easily confused by specific problems" }
+          ],
+          userQuote: "Even if the answer takes longer, they would rather talk with a real person. EO/cloud problems are so specific that bots get confused"
+        }
+      },
+      {
+        id: 7,
+        name: "Community",
+        color: "#E67E22",
+        description: "Engagement, collaboration, diversity, and knowledge exchange among users",
+        needs: [
+          "Foster community engagement",
+          "Promote diversity and inclusivity",
+          "Encourage knowledge exchange",
+          "Support open-source contributions"
+        ],
+        recommendations: [
+          "Community engagement: Active participation incentives",
+          "Knowledge sharing: Tools and forums",
+          "Collaboration opportunities: Discussion boards, projects",
+          "User support and mentoring programs"
+        ],
+        examples: {
+          pairs: [
+            { weakness: "Limited community engagement reduces collaboration", strength: "Active engagement within community enhances collaboration" },
+            { weakness: "Limited diversity leads to narrow worldview and innovation hesitance", strength: "Service providers engage with multiple communities" },
+            { weakness: "Homogeneity within companies and teams limits perspectives", strength: "Heterogeneous workforce brings wide array of ideas and solutions" },
+            { weakness: "Provider or developer credibility issues without community presence", strength: "Open-source contributions boost credibility and trust" },
+            { weakness: "Lack of collaborative opportunities across platforms", strength: "Active community participation key for marketing and PR" }
+          ],
+          userQuote: "Diversity is the most significant factor, benefiting providers by expanding skill sets and users by fostering trust"
+        }
+      },
+      {
+        id: 8,
+        name: "Price Transparency",
+        color: "#C0392B",
+        description: "Clarity, predictability, and comparability of costs",
+        needs: [
+          "Predictable pricing models",
+          "Usage alerts and thresholds",
+          "Cost comparison tools",
+          "No hidden costs"
+        ],
+        recommendations: [
+          "Transparent prices: Clear and accessible pricing",
+          "Cost breakdown: Detailed cost components",
+          "Cost predictability: Thresholding and pre-paid options",
+          "Cost optimization recommendations"
+        ],
+        examples: {
+          pairs: [
+            { weakness: "Unpredictable costs due to fluctuating resource usage", strength: "Pay per use with clear pricing structure" },
+            { weakness: "Risk of incurring costs for forgotten shelved resources", strength: "Shelving Virtual Machines when not in use saves costs" },
+            { weakness: "Challenging to compare offers from different cloud providers", strength: "Homogeneous price offers easy to understand (like mobile plans)" },
+            { weakness: "Insufficient granularity in monitoring tools", strength: "Better monitoring of resource wallet with cost thresholds" },
+            { weakness: "Estimations inaccurate, leading to budget overruns", strength: "Pre-estimation of costs for development projects" }
+          ],
+          userQuote: "Users seek pricing structures that are easy to understand and compare, similar to mobile phone or insurance plans"
+        }
+      },
+      {
+        id: 9,
+        name: "Sustainability",
+        color: "#27AE60",
+        description: "Long-term viability (business model) and environmental responsibility",
+        needs: [
+          "Sustainable business model",
+          "Platform longevity guarantees",
+          "Environmental metrics (CO2, PUE)",
+          "Energy-efficient operations"
+        ],
+        recommendations: [
+          "Revenue growth: Proxy for platform longevity",
+          "Longevity commitment from service provider",
+          "Carbon footprint tracking",
+          "Power usage effectiveness (PUE) metrics"
+        ],
+        examples: {
+          pairs: [
+            { weakness: "Risk of platform's short-term existence and obsolescence", strength: "Long-term funding secured with robust business model" },
+            { weakness: "Lack of tools for users to measure environmental impact", strength: "Service to calculate a project's CO2 footprint" },
+            { weakness: "Wasted resources due to idle services running", strength: "Automatic shutdown of resources when no longer required" },
+            { weakness: "Higher energy consumption during peak hours", strength: "Energy-efficient usage (optimizing for night-time operations)" },
+            { weakness: "Code that is not optimized for energy conservation", strength: "Opportunities for users to write more energy-efficient code" }
+          ],
+          userQuote: "A sustainable business model is crucial for the long-term viability and success of any service"
+        }
+      },
+      {
+        id: 10,
+        name: "Performance",
+        color: "#8E44AD",
+        description: "Technical reliability, scalability, security, and efficiency",
+        needs: [
+          "High uptime and responsiveness",
+          "Scalability for large workloads",
+          "Robust security measures",
+          "State-of-the-art tools and libraries"
+        ],
+        recommendations: [
+          "Responsiveness: Uptime guarantees, fast data retrieval",
+          "Scalability: Handle increasing demands",
+          "Security and privacy: Data protection, clear policies",
+          "Data Transfer Nodes (DTN) for large transfers"
+        ],
+        examples: {
+          pairs: [
+            { weakness: "Limitations in handling large-scale data transfers efficiently", strength: "DTN technologies tested with GÉANT and NRENs for large transfers" },
+            { weakness: "Outdated technology slowing down progress and innovation", strength: "Continuous improvements regarding state-of-the-art technical progress" },
+            { weakness: "Inadequate availability and reliability of services", strength: "Guaranteed service levels (24x7 or 5x8)" },
+            { weakness: "Insufficient processing resources to support user base", strength: "Scalability to accommodate users and processing power" },
+            { weakness: "Multiple authentication required from various platforms", strength: "Authentication and authorization via trusted network (GÉANT AAI)" }
+          ],
+          userQuote: "Large data transfer capacity could be tested using Data Transfer Nodes (DTNs) technologies with GÉANT"
+        }
+      }
+    ];
+
+    let selectedPrinciple = null;
+    let activeTab = 'needs';
+    const centerX = 400;
+    const centerY = 300;
+    const radius = 220;
+
+    function getPosition(index, total) {
+      const angle = (index * 2 * Math.PI / total) - Math.PI / 2;
+      return {
+        x: centerX + radius * Math.cos(angle),
+        y: centerY + radius * Math.sin(angle)
+      };
+    }
+
+    function selectPrinciple(p) {
+      selectedPrinciple = selectedPrinciple?.id === p.id ? null : p;
+      activeTab = 'needs';
+      render();
+    }
+
+    function setTab(tab) {
+      activeTab = tab;
+      render();
+    }
+
+    function render() {
+      const app = document.getElementById('app');
+      
+      // Build SVG content
+      let svgContent = '';
+      
+      // Connection lines
+      principlesData.forEach((p, i) => {
+        const pos = getPosition(i, principlesData.length);
+        const isSelected = selectedPrinciple?.id === p.id;
+        svgContent += `<line x1="${centerX}" y1="${centerY}" x2="${pos.x}" y2="${pos.y}" 
+          stroke="${isSelected ? p.color : '#475569'}" 
+          stroke-width="${isSelected ? 3 : 1.5}" 
+          stroke-dasharray="${isSelected ? '0' : '4,4'}" 
+          class="transition-all"/>`;
+      });
+      
+      // Center node
+      svgContent += `
+        <defs>
+          <radialGradient id="centerGradient" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#3b82f6"/>
+            <stop offset="100%" stop-color="#1e40af"/>
+          </radialGradient>
+        </defs>
+        <circle cx="${centerX}" cy="${centerY}" r="70" fill="url(#centerGradient)" stroke="#60a5fa" stroke-width="3"/>
+        <text x="${centerX}" y="${centerY - 10}" text-anchor="middle" fill="white" font-size="14" font-weight="bold">User-Centric</text>
+        <text x="${centerX}" y="${centerY + 10}" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Cloud Platforms</text>
+      `;
+      
+      // Principle nodes
+      principlesData.forEach((p, i) => {
+        const pos = getPosition(i, principlesData.length);
+        const isSelected = selectedPrinciple?.id === p.id;
+        const nameParts = p.name.split(' ');
+        svgContent += `
+          <g onclick="selectPrinciple(principlesData[${i}])" style="cursor: pointer;">
+            <circle cx="${pos.x}" cy="${pos.y}" r="${isSelected ? 55 : 45}" 
+              fill="${p.color}" opacity="${isSelected ? 1 : 0.85}" 
+              stroke="${isSelected ? '#fff' : 'transparent'}" stroke-width="3" 
+              class="transition-all hover:opacity-100"/>
+            <text x="${pos.x}" y="${pos.y - 8}" text-anchor="middle" fill="white" 
+              font-size="${isSelected ? 11 : 10}" font-weight="bold" style="pointer-events: none;">
+              ${p.id}. ${nameParts[0]}
+            </text>
+            ${nameParts.length > 1 ? `
+              <text x="${pos.x}" y="${pos.y + 8}" text-anchor="middle" fill="white" 
+                font-size="${isSelected ? 11 : 10}" font-weight="bold" style="pointer-events: none;">
+                ${nameParts.slice(1).join(' ')}
+              </text>
+            ` : ''}
+          </g>
+        `;
+      });
+
+      // Build detail panel content
+      let detailContent = '';
+      if (selectedPrinciple) {
+        const p = selectedPrinciple;
+        
+        // Needs content
+        let needsContent = p.needs.map(need => `
+          <div class="flex items-start gap-2 p-2 rounded-lg bg-slate-700/30">
+            <span class="w-5 h-5 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5" style="background-color: ${p.color}">✓</span>
+            <span class="text-slate-200 text-sm">${need}</span>
+          </div>
+        `).join('');
+        
+        // Recommendations content
+        let recsContent = p.recommendations.map(rec => `
+          <div class="p-3 rounded-lg bg-slate-700/30 border-l-2" style="border-color: ${p.color}">
+            <span class="text-slate-200 text-sm">${rec}</span>
+          </div>
+        `).join('');
+        
+        // Examples content
+        let examplesContent = p.examples.pairs.map(pair => `
+          <div class="rounded-lg overflow-hidden border border-slate-600/50">
+            <div class="p-2.5 bg-red-500/10 border-b border-slate-600/50">
+              <div class="flex items-start gap-2">
+                <span class="text-red-400 text-xs font-bold mt-0.5">−</span>
+                <span class="text-slate-200 text-sm">${pair.weakness}</span>
+              </div>
+            </div>
+            <div class="p-2.5 bg-green-500/10">
+              <div class="flex items-start gap-2">
+                <span class="text-green-400 text-xs font-bold mt-0.5">+</span>
+                <span class="text-slate-200 text-sm">${pair.strength}</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+        
+        examplesContent += `
+          <div class="mt-4 pt-3 border-t border-slate-600/50">
+            <h3 class="text-sm font-semibold text-blue-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+              <span class="text-lg">"</span> User Quote
+            </h3>
+            <div class="p-3 rounded-lg bg-blue-500/10 border border-blue-500/30 italic">
+              <span class="text-slate-300 text-sm">"${p.examples.userQuote}"</span>
+            </div>
+          </div>
+        `;
+
+        const tabClass = (tab) => `flex-1 py-2 px-3 rounded-md text-xs font-medium transition-all cursor-pointer ${activeTab === tab ? 'bg-slate-600 text-white' : 'text-slate-400 hover:text-white'}`;
+        
+        detailContent = `
+          <div class="h-full flex flex-col">
+            <div class="rounded-xl p-4 mb-4" style="background-color: ${p.color}20; border-left: 4px solid ${p.color}">
+              <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <span class="w-8 h-8 rounded-full flex items-center justify-center text-sm" style="background-color: ${p.color}">${p.id}</span>
+                ${p.name}
+              </h2>
+              <p class="text-slate-300 text-sm mt-2">${p.description}</p>
+            </div>
+            
+            <div class="flex gap-1 mb-4 bg-slate-700/50 rounded-lg p-1">
+              <div class="${tabClass('needs')}" onclick="setTab('needs')">Needs</div>
+              <div class="${tabClass('recommendations')}" onclick="setTab('recommendations')">Recommendations</div>
+              <div class="${tabClass('examples')}" onclick="setTab('examples')">Examples</div>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto">
+              ${activeTab === 'needs' ? `
+                <div class="space-y-2">
+                  <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">User Needs & Wishes</h3>
+                  ${needsContent}
+                </div>
+              ` : ''}
+              ${activeTab === 'recommendations' ? `
+                <div class="space-y-2">
+                  <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Actionable Recommendations</h3>
+                  ${recsContent}
+                </div>
+              ` : ''}
+              ${activeTab === 'examples' ? `
+                <div class="space-y-3">
+                  <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Weakness → Strength Pairs</h3>
+                  ${examplesContent}
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      } else {
+        const quickList = principlesData.map(p => `
+          <button onclick="selectPrinciple(principlesData[${p.id - 1}])" class="text-left text-xs py-1.5 px-2 rounded bg-slate-700/30 hover:bg-slate-700 transition-colors">
+            <span class="inline-block w-4 h-4 rounded-full mr-1.5 text-center text-white" style="background-color: ${p.color}; font-size: 10px; line-height: 16px;">${p.id}</span>
+            <span class="text-slate-300">${p.name}</span>
+          </button>
+        `).join('');
+        
+        detailContent = `
+          <div class="h-full flex flex-col items-center justify-center text-center p-6">
+            <div class="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center mb-4">
+              <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-white mb-2">Select a Principle</h3>
+            <p class="text-slate-400 text-sm">Click on any of the 10 principles in the mind map to explore its details, user needs, and recommendations.</p>
+            <div class="mt-6 w-full">
+              <p class="text-xs text-slate-500 mb-2">All Principles:</p>
+              <div class="grid grid-cols-2 gap-1">${quickList}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      app.innerHTML = `
+        <div class="text-center mb-6">
+          <h1 class="text-3xl font-bold text-white mb-2">10 Heuristic Principles for Cloud Platforms</h1>
+          <p class="text-slate-400 text-sm">
+            Based on <a href="https://data.europa.eu/doi/10.2760/6756717" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">DOI: 10.2760/6756717</a> - JRC Report on User-Centric Practices
+          </p>
+          <p class="text-slate-500 text-xs mt-1">Click on any principle to explore details</p>
+        </div>
+        
+        <div class="flex flex-col lg:flex-row gap-6">
+          <div class="flex-1 bg-slate-800/50 rounded-2xl p-4 backdrop-blur">
+            <svg viewBox="0 0 800 600" class="w-full h-auto">${svgContent}</svg>
+          </div>
+          
+          <div class="lg:w-96 bg-slate-800/50 rounded-2xl p-5 backdrop-blur">
+            ${detailContent}
+          </div>
+        </div>
+        
+        <div class="mt-6 text-center text-slate-500 text-xs">
+          Source: Di Leo, M. et al. (2025) "Principles for user-centric practices of cloud platforms" 
+          <a href="https://data.europa.eu/doi/10.2760/6756717" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">DOI: 10.2760/6756717</a> | JRC141544
+        </div>
+      `;
+    }
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>
